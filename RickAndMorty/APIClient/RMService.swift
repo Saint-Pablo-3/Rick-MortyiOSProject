@@ -6,18 +6,23 @@
 //
 
 import Foundation
-//Primary API service object to get RM data
+///Primary API service object to get RM data
 final class RMService {
-    //Shared singleton instance
+    ///Shared singleton instance
     static let shared = RMService()
     
-    //privatized constructor
+    ///privatized constructor
     private init() {}
     
-    //Send R&M API call
-    //-request: Request instance
-    //-completion: Callback with data or error
-    public func execute(_ request: RMRequest, completion: @escaping () -> Void) {
+    ///Send R&M API call
+    ///-Parameters:
+    /// -request: Request instance
+    /// -type: The type of object we expect to get back
+    /// -completion: Callback with data or error
+    public func execute<T: Codable>(
+        _ request: RMRequest,
+        expecting type: T.Type,
+        completion: @escaping (Result<T, Error>) -> Void) {
         
     }
 }
