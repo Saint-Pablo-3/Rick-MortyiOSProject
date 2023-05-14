@@ -7,7 +7,7 @@
 
 import Foundation
 final class RMCharacterCollectionViewCellViewModel {
-    private let chaarcterName: String
+    let characterName: String
     private let characterStatus: RMCharacterStatus
     private let characterImageUrl: URL?
     
@@ -18,7 +18,7 @@ final class RMCharacterCollectionViewCellViewModel {
         characterStatus: RMCharacterStatus,
         characterImageUrl: URL?
     ) {
-        self.chaarcterName = characterName
+        self.characterName = characterName
         self.characterStatus = characterStatus
         self.characterImageUrl = characterImageUrl
     }
