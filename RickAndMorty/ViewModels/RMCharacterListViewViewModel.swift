@@ -8,9 +8,10 @@
 import UIKit
 protocol RMCharacterListViewModelDelegate: AnyObject {
     func didLoadInitialCharacters()
+    func didLoadMoreCharacters(with newIndexPaths: [IndexPath])
+    
     func didSelectCharacter(_ character: RMCharacter)
 }
-
 /// View Model to character list view logic
 final class RMCharacterListViewViewModel: NSObject {
     
@@ -26,12 +27,14 @@ final class RMCharacterListViewViewModel: NSObject {
                     characterStatus: character.status,
                     characterImageUrl: URL(string: character.image)
                 )
-                cellViewModelModels.append(viewModel)
+                if !cellViewModels.contains(viewModel) {
+                    cellViewModels.append(viewModel)
+                }
             }
         }
     }
     
-    private var cellViewModelModels: [RMCharacterCollectionViewCellViewModel] = []
+    private var cellViewModels: [RMCharacterCollectionViewCellViewModel] = []
     
     private var apiInfo: RMGetAllCharactersResponse.Info? = nil
     
@@ -40,9 +43,9 @@ final class RMCharacterListViewViewModel: NSObject {
         RMService.shared.execute(.listCharactersRequests, expecting: RMGetAllCharactersResponse.self
         ) { [weak self] result in
             switch result {
-            case .success(let responeModel):
-                let results = responeModel.results
-                let info = responeModel.info
+            case .success(let responseModel):
+                let results = responseModel.results
+                let info = responseModel.info
                 self?.characters = results
                 self?.apiInfo = info
                 DispatchQueue.main.async {
@@ -55,23 +58,49 @@ final class RMCharacterListViewViewModel: NSObject {
     }
     ///Paginate if additional characters are needed
     public func fetchAdditionalCharacters(url: URL) {
-        isLoadingMoreCharacters = true
-        print("fetching more characters")
-        guard let request = RMRequest(url: url) else {
-            isLoadingMoreCharacters = false
-            print("Failed to create request")
+        guard !isLoadingMoreCharacters else {
             return
         }
-//        RMService.shared.execute(request,
-//                                 expecting: RMGetAllCharactersResponse.self) { result in
-//            switch result {
-//            case .success(let success):
-//                print(String(describing: success))
-//            case .failure(let failure):
-//                print(String(describing: failure))
-//                      
-//            }
-//        }
+        isLoadingMoreCharacters = true
+        guard let request = RMRequest(url: url) else {
+            isLoadingMoreCharacters = false
+            return
+        }
+        
+        RMService.shared.execute(request,
+                                 expecting: RMGetAllCharactersResponse.self) { [weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
+            switch result {
+            case .success(let responseModel):
+//                print("Pre-update: \(strongSelf.cellViewModels.count)")
+                let moreResults = responseModel.results
+                let info = responseModel.info
+                strongSelf.apiInfo = info
+                
+                let originalCount = strongSelf.characters.count
+                let newCount = moreResults.count
+                let total = originalCount+newCount
+                let startingIndex = total - newCount
+                let indexPathsToAdd: [IndexPath] = Array(startingIndex..<(startingIndex+newCount)).compactMap({
+                    return IndexPath(row: $0, section: 0)
+                })
+                strongSelf.characters.append(contentsOf: moreResults)
+                
+                DispatchQueue.main.async {
+                    strongSelf.delegate?.didLoadMoreCharacters(
+                        with: indexPathsToAdd
+                    )
+                    
+                    strongSelf.isLoadingMoreCharacters = false
+                }
+                
+            case .failure(let failure):
+                print(String(describing: failure))
+                self?.isLoadingMoreCharacters = false
+            }
+        }
 }
     
     public var shouldShowLoadMoreIndicator: Bool {
@@ -83,7 +112,7 @@ final class RMCharacterListViewViewModel: NSObject {
 
 extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cellViewModelModels.count
+        return cellViewModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -93,7 +122,7 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource, UICollection
         ) as? RMCharacterCollectionViewCell else {
             fatalError("Unsupported cell")
         }
-        cell.configure(with: cellViewModelModels[indexPath.row])
+        cell.configure(with: cellViewModels[indexPath.row])
         return cell
     }
     
@@ -142,7 +171,7 @@ extension RMCharacterListViewViewModel: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard shouldShowLoadMoreIndicator,
               !isLoadingMoreCharacters,
-              !cellViewModelModels.isEmpty,
+              !cellViewModels.isEmpty,
               let nextUrlString = apiInfo?.next,
               let url = URL(string: nextUrlString) else {
             return

@@ -36,6 +36,7 @@
 		9BB160352A1B302A00578967 /* RMCharacterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB160342A1B302A00578967 /* RMCharacterDetailView.swift */; };
 		9BB160372A1B307B00578967 /* RMCharacterDetailViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB160362A1B307B00578967 /* RMCharacterDetailViewViewModel.swift */; };
 		9BB1603D2A1F420900578967 /* RMFooterLoadingCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB1603C2A1F420900578967 /* RMFooterLoadingCollectionReusableView.swift */; };
+		9BB2721A2A2F3CED009B27E6 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB272192A2F3CED009B27E6 /* ImageLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		9BB160342A1B302A00578967 /* RMCharacterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMCharacterDetailView.swift; sourceTree = "<group>"; };
 		9BB160362A1B307B00578967 /* RMCharacterDetailViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMCharacterDetailViewViewModel.swift; sourceTree = "<group>"; };
 		9BB1603C2A1F420900578967 /* RMFooterLoadingCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RMFooterLoadingCollectionReusableView.swift; sourceTree = "<group>"; };
+		9BB272192A2F3CED009B27E6 /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +183,7 @@
 		9BA118FF29F936290050A55C /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				9BB272192A2F3CED009B27E6 /* ImageLoader.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 				9BA118EB29F7C6F20050A55C /* RMEpisode.swift in Sources */,
 				9BA118D029F7BD210050A55C /* RMTabBarController.swift in Sources */,
 				9BA118F229F7C9730050A55C /* RMEpisodeViewController.swift in Sources */,
+				9BB2721A2A2F3CED009B27E6 /* ImageLoader.swift in Sources */,
 				9BA118EE29F7C7E30050A55C /* RMCharacterViewController.swift in Sources */,
 				9BA118CC29F7BD210050A55C /* AppDelegate.swift in Sources */,
 				9BA118F429F7C9FC0050A55C /* RMSettingsViewController.swift in Sources */,
