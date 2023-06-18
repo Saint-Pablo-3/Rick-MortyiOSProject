@@ -12,7 +12,6 @@ protocol RMCharacterListViewDelegate: AnyObject {
                              didSelectCharacter chracter: RMCharacter
     )
 }
-
 /// View that handles showing of characters, loade, etc
 final class RMCharacterListView: UIView {
     
