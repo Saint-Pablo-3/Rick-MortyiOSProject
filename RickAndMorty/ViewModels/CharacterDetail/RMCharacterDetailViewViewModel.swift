@@ -7,21 +7,44 @@
 
 import UIKit
 
+//5:00:19
+
 final class RMCharacterDetailViewViewModel {
     private let character: RMCharacter
     
-    enum SectionType: CaseIterable {
-        case photo
-        case information
-        case episodes
+    enum SectionType {
+        case photo(viewModel: RMCharacterPhotoCollectionViewCellViewModel)
+        
+        case information(viewModels: [RMCharacterInfoCollectionViewCellViewModel])
+        
+        case episodes(viewModels: [RMCharacterEpisodeCollectionViewCellViewModel])
     }
     
-    public let sections = SectionType.allCases
+    public var sections: [SectionType] = []
     
     //MARK: - Init
     
     init(character: RMCharacter) {
         self.character = character
+        setUpSections()
+    }
+    
+    private func setUpSections() {
+        sections = [
+            .photo(viewModel: .init()),
+            .information(viewModels: [
+                .init(),
+                .init(),
+                .init(),
+                .init()
+            ]),
+            .episodes(viewModels: [
+                .init(),
+                .init(),
+                .init(),
+                .init()
+            ])
+        ]
     }
     
     public var requestUrl: URL? {
@@ -33,7 +56,6 @@ final class RMCharacterDetailViewViewModel {
     }
     
     //MARK: - Layouts
-    
     
     public func createPhotoSectionLayout() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(
@@ -90,9 +112,9 @@ final class RMCharacterDetailViewViewModel {
             )
         )
         item.contentInsets = NSDirectionalEdgeInsets(top: 10,
-                                                     leading: 5,
+                                                     leading: 10,
                                                      bottom: 10,
-                                                     trailing: 8)
+                                                     trailing: 10)
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
@@ -105,5 +127,6 @@ final class RMCharacterDetailViewViewModel {
         section.orthogonalScrollingBehavior = .groupPaging
         return section
     }
+   
 
 }
